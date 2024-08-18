@@ -1,29 +1,34 @@
 # base on default node 20 image
 FROM node:20-alpine
 
-RUN corepack enable
-RUN corepack install --global yarn@4.1.1
-
 # bash shadow and sudo required for run-with-current-user-ids.sh
 RUN apk --no-cache add bash shadow
 RUN set -ex && apk --no-cache add sudo
 
-# Create app directory
-WORKDIR /usr/src/app
+RUN corepack enable
 
-COPY run-with-current-user-ids.sh /usr/src/app
-RUN chown node:node /usr/src/app/run-with-current-user-ids.sh
-RUN chmod +x /usr/src/app/run-with-current-user-ids.sh
+ARG workdir=/home/node/app
+
+# Create app directory
+WORKDIR ${workdir}
+
+# Will not be available to node user if not installed as node user
+# meaning that when yarn is run as node user, it will not be able
+# to find the yarn binary
+USER node
+RUN corepack install --global yarn@4.1.1
+USER root
 
 # Install app dependencies
 COPY package*.json ./
 COPY yarn.lock ./
-
 RUN yarn
+
+COPY --chmod=744 run-with-current-user-ids.sh ./
 
 # Bundle app source
 COPY src/ ./src/
 
-# EXPOSE 3000
+RUN chown -R node:node ${workdir}
 
-CMD [ "./run-with-current-user-ids.sh", "yarn", "start" ]
+CMD [ "bash", "run-with-current-user-ids.sh", "yarn", "start" ]
