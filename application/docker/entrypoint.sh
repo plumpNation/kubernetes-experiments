@@ -32,12 +32,8 @@ fi
 groupmod --gid "$HOST_GID" node
 usermod --uid "$HOST_UID" node
 
-# Drop privileges and run the command as the 'node' user
-su node
-
 if [[ $# -gt 0 ]]; then
-    "$@"
+  exec sudo -u node -- "$@"
 else
-    echo "ERROR: no command to run" >&2
-    exit 2
+  exec sudo -u node -- /bin/bash
 fi

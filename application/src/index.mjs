@@ -1,4 +1,5 @@
 import express from 'express';
+import os from 'os';
 
 const app = express();
 
@@ -8,7 +9,7 @@ const PORT = process.env.PORT || 3000;
 // the correct port to the console.
 const HOST_PORT = process.env.HOST_PORT || PORT;
 
-console.log(`Running application process as user ${process.env.USER}`);
+console.log(`Running application process as user ${os.userInfo().username}`);
 
 app.get('/', (_, res) => {
   res.send('Hello World!');
