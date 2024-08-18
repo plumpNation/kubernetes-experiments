@@ -6,22 +6,17 @@ RUN apk --no-cache add bash shadow
 RUN set -ex && apk --no-cache add sudo
 
 RUN corepack enable
+RUN corepack install --global yarn@4.1.1
 
 ARG workdir=/home/node/app
 
 # Create app directory
 WORKDIR ${workdir}
 
-# Will not be available to node user if not installed as node user
-# meaning that when yarn is run as node user, it will not be able
-# to find the yarn binary
-USER node
-RUN corepack install --global yarn@4.1.1
-USER root
-
 # Install app dependencies
 COPY package*.json ./
 COPY yarn.lock ./
+COPY .yarnrc.yml ./
 RUN yarn
 
 COPY --chmod=744 run-with-current-user-ids.sh ./
