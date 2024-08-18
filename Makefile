@@ -2,7 +2,8 @@ IMAGE_NAME:=node-hello-world
 
 CURRENT_UID := $(shell id -u)
 CURRENT_GID := $(shell id -g)
-PORT := 7777
+HOST_PORT := 8080
+PORT := 3000
 
 app-build-image:
 	cd application && docker build -t $(IMAGE_NAME) .
@@ -10,10 +11,11 @@ app-build-image:
 app-dive:
 	dive $(IMAGE_NAME)
 
-app-run:
+app-run-local:
 	docker run \
+		--rm \
 		-e HOST_UID=$(CURRENT_UID) \
 		-e HOST_GID=$(CURRENT_GID) \
 		-e PORT=$(PORT) \
-		-p 8080:$(PORT) \
+		-p $(HOST_PORT):$(PORT) \
 		$(IMAGE_NAME)
