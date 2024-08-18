@@ -5,7 +5,7 @@ FROM node:20-alpine
 RUN apk --no-cache add bash shadow
 RUN set -ex && apk --no-cache add sudo
 
-RUN corepack enable
+RUN corepack enable yarn
 
 ARG workdir=/home/node/app
 
