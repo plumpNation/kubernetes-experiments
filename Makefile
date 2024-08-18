@@ -4,7 +4,7 @@ CONTAINER_NAME:=node-hello-world
 CURRENT_UID := $(shell id -u)
 CURRENT_GID := $(shell id -g)
 HOST_PORT := 8080
-PORT := 3000
+APP_PORT := 8080
 
 app-build-image:
 	cd application && docker build -t $(IMAGE_NAME) .
@@ -17,8 +17,9 @@ app-run-local:
 		--rm \
 		-e HOST_UID=$(CURRENT_UID) \
 		-e HOST_GID=$(CURRENT_GID) \
-		-e PORT=$(PORT) \
-		-p $(HOST_PORT):$(PORT) \
-		$(IMAGE_NAME)app-kill-local:
+		-e PORT=$(APP_PORT) \
+		-p $(HOST_PORT):$(APP_PORT) \
+		--name $(CONTAINER_NAME) \
+		$(IMAGE_NAME)
 app-kill-local:
 	docker kill $(CONTAINER_NAME)

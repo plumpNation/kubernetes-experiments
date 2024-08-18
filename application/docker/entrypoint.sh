@@ -33,7 +33,12 @@ groupmod --gid "$HOST_GID" node
 usermod --uid "$HOST_UID" node
 
 if [[ $# -gt 0 ]]; then
-  exec sudo -u node -- "$@"
+    # we have to pass along the env vars we want to keep
+    # if we use -E with sudo, it will keep all env vars
+    # but we don't want to pass along all env vars, as this
+    # can have unintended consequences like corepack looking
+    # in the root folder for .yarnrc.yml.
+    exec sudo -u node -- env PORT=$PORT $@
 else
-  exec sudo -u node -- /bin/bash
+    exec sudo -u node -- /bin/bash
 fi
