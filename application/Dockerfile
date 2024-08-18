@@ -26,4 +26,6 @@ COPY src/ ./src/
 
 RUN chown -R node:node ${workdir}
 
-CMD [ "bash", "run-with-current-user-ids.sh", "yarn", "start" ]
+ENTRYPOINT [ "./run-with-current-user-ids.sh" ]
+
+CMD ["yarn", "start"]
