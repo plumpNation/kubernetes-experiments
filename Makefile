@@ -1,4 +1,5 @@
 IMAGE_NAME:=node-hello-world
+CONTAINER_NAME:=node-hello-world
 
 CURRENT_UID := $(shell id -u)
 CURRENT_GID := $(shell id -g)
@@ -18,4 +19,6 @@ app-run-local:
 		-e HOST_GID=$(CURRENT_GID) \
 		-e PORT=$(PORT) \
 		-p $(HOST_PORT):$(PORT) \
-		$(IMAGE_NAME)
+		$(IMAGE_NAME)app-kill-local:
+app-kill-local:
+	docker kill $(CONTAINER_NAME)
